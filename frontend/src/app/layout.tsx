@@ -31,7 +31,24 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${outfit.variable} ${plusJakarta.variable}`}>
+        <html lang="en" className={`${outfit.variable} ${plusJakarta.variable}`} suppressHydrationWarning>
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                try {
+                                    var theme = localStorage.getItem('theme');
+                                    var supportDark = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+                                    if (!theme && supportDark) theme = 'dark';
+                                    if (!theme) theme = 'light';
+                                    if (theme === 'dark') document.documentElement.classList.add('dark');
+                                } catch (e) {}
+                            })();
+                        `,
+                    }}
+                />
+            </head>
             <body className="font-outfit">{children}</body>
         </html>
     );

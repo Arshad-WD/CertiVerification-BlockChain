@@ -2,12 +2,9 @@ export async function uploadToIPFS(file: File) {
     const PINATA_JWT = process.env.NEXT_PUBLIC_PINATA_JWT;
 
     if (!PINATA_JWT) {
-        console.warn("Pinata JWT not found. Mocking upload...");
-        // Mock upload for development
         return {
-            success: true,
-            cid: "QmMockHash" + Math.random().toString(36).substring(7),
-            url: URL.createObjectURL(file)
+            success: false,
+            error: "IPFS Configuration Error: PINATA_JWT is missing. Please set it in your environment."
         };
     }
 
@@ -33,13 +30,21 @@ export async function uploadToIPFS(file: File) {
             body: formData,
         });
         const resData = await res.json();
+
+        if (!resData.IpfsHash) {
+            throw new Error("Pinata response missing IpfsHash");
+        }
+
         return {
             success: true,
-            cid: resData.IpfsHash,
+            cid: resData.IpfsHash as string,
             url: `https://gateway.pinata.cloud/ipfs/${resData.IpfsHash}`,
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error uploading to IPFS:", error);
-        return { success: false, error };
+        return {
+            success: false,
+            error: error.message || "Unknown IPFS Error"
+        };
     }
 }

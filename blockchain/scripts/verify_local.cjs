@@ -8,7 +8,7 @@ async function main() {
 
     // Deploy the contract
     console.log("Deploying CertificateVerifier...");
-    const verifier = await CertificateVerifier.deploy();
+    const verifier = await CertificateVerifier.deploy({ gasLimit: 5000000 });
     await verifier.waitForDeployment();
 
     const address = await verifier.getAddress();
@@ -20,7 +20,7 @@ async function main() {
     // Issue a certificate
     console.log("Issuing certificate for hash:", certificateHash);
     try {
-        const tx = await verifier.issueCertificate(certificateHash);
+        const tx = await verifier.issueCertificate(certificateHash, { gasLimit: 500000 });
         await tx.wait();
         console.log("Certificate issued successfully!");
 
