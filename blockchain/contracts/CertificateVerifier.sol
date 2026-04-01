@@ -26,6 +26,7 @@ contract CertificateVerifier is Ownable {
         string cid, 
         uint256 timestamp
     );
+    event CertificateVerified(bytes32 indexed hash, address indexed verifier, uint256 timestamp);
     event CertificateRevoked(bytes32 indexed hash);
     event IssuerAdded(address indexed issuer);
     event IssuerRemoved(address indexed issuer);
@@ -82,6 +83,12 @@ contract CertificateVerifier is Ownable {
         certificates[_contentHash].isValid = false;
         totalRevoked++;
         emit CertificateRevoked(_contentHash);
+    }
+
+    function recordVerification(bytes32 _contentHash) external {
+        require(certificates[_contentHash].timestamp != 0, "Not found");
+        require(certificates[_contentHash].isValid, "Revoked");
+        emit CertificateVerified(_contentHash, msg.sender, block.timestamp);
     }
 
     function verifyCertificate(bytes32 _contentHash) external view returns (

@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { Space_Grotesk, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
-    variable: "--font-outfit",
-    weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+    variable: "--font-space",
+    weight: ["300", "400", "500", "600", "700"],
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
+const ibmPlexMono = IBM_Plex_Mono({
     subsets: ["latin"],
-    variable: "--font-plus-jakarta",
-    weight: ["200", "300", "400", "500", "600", "700", "800"],
+    variable: "--font-mono",
+    weight: ["300", "400", "500", "600", "700"],
+});
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-inter",
 });
 
 declare global {
@@ -21,8 +26,8 @@ declare global {
 }
 
 export const metadata: Metadata = {
-    title: "BlockCert Vault Pro | Immutable Verification",
-    description: "High-fidelity blockchain infrastructure for certificate verification",
+    title: "CertChain — Blockchain Certificate Verification",
+    description: "Issue and verify tamper-proof academic credentials on the blockchain.",
 };
 
 export default function RootLayout({
@@ -31,25 +36,10 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${outfit.variable} ${plusJakarta.variable}`} suppressHydrationWarning>
-            <head>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            (function() {
-                                try {
-                                    var theme = localStorage.getItem('theme');
-                                    var supportDark = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-                                    if (!theme && supportDark) theme = 'dark';
-                                    if (!theme) theme = 'light';
-                                    if (theme === 'dark') document.documentElement.classList.add('dark');
-                                } catch (e) {}
-                            })();
-                        `,
-                    }}
-                />
-            </head>
-            <body className="font-outfit">{children}</body>
+        <html lang="en" className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} ${inter.variable}`} suppressHydrationWarning>
+            <body style={{ margin: 0, background: "#050911", color: "#f8fafc" }}>
+                {children}
+            </body>
         </html>
     );
 }
